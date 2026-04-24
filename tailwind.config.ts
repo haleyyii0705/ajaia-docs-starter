@@ -19,6 +19,12 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        canvas: {
+          DEFAULT: "hsl(var(--canvas))",
+          foreground: "hsl(var(--canvas-foreground))",
+        },
+        workspace: "hsl(var(--workspace))",
+        success: "hsl(var(--success))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
