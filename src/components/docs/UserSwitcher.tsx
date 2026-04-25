@@ -13,16 +13,16 @@ import type { User } from "@/types/docs";
 
 interface UserSwitcherProps {
   users: User[];
-  currentUserEmail: string;
-  onUserChange: (email: string) => void;
+  currentUserId: string;
+  onUserChange: (userId: string) => void;
 }
 
 export function UserSwitcher({
   users,
-  currentUserEmail,
+  currentUserId,
   onUserChange,
 }: UserSwitcherProps) {
-  const current = users.find((u) => u.email === currentUserEmail) ?? users[0];
+  const current = users.find((u) => u.id === currentUserId) ?? users[0];
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -41,8 +41,8 @@ export function UserSwitcher({
         <DropdownMenuSeparator />
         {users.map((u) => (
           <DropdownMenuItem
-            key={u.email}
-            onSelect={() => onUserChange(u.email)}
+            key={u.id}
+            onSelect={() => onUserChange(u.id)}
             className="gap-2"
           >
             <Avatar user={u} />
@@ -52,7 +52,7 @@ export function UserSwitcher({
                 {u.email}
               </span>
             </div>
-            {u.email === currentUserEmail && (
+            {u.id === currentUserId && (
               <span className="ml-auto text-[10px] font-semibold uppercase text-primary">
                 Active
               </span>

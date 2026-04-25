@@ -1,13 +1,13 @@
 import { FileText, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatRelativeTime } from "@/lib/docs/utils";
+import { getUserById } from "@/lib/docs/mockData";
 import type { DocumentItem } from "@/types/docs";
 
 interface DocumentListProps {
   documents: DocumentItem[];
   activeId: string | null;
   onSelect: (id: string) => void;
-  currentUserEmail: string;
   variant: "owned" | "shared";
   emptyLabel: string;
 }
@@ -16,7 +16,6 @@ export function DocumentList({
   documents,
   activeId,
   onSelect,
-  currentUserEmail,
   variant,
   emptyLabel,
 }: DocumentListProps) {
@@ -33,8 +32,9 @@ export function DocumentList({
     <ul className="flex flex-col gap-0.5 px-1">
       {documents.map((doc) => {
         const isActive = doc.id === activeId;
-        const sharedFromOwner =
-          variant === "shared" ? doc.ownerEmail : null;
+        const owner = getUserById(doc.ownerId);
+        const fromLabel =
+          variant === "shared" ? (owner?.name?.split(" ")[0] ?? doc.ownerId) : null;
         return (
           <li key={doc.id}>
             <button
@@ -65,15 +65,13 @@ export function DocumentList({
                 </div>
                 <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <span>{formatRelativeTime(doc.updatedAt)}</span>
-                  {sharedFromOwner && (
+                  {fromLabel && (
                     <>
                       <span aria-hidden>·</span>
-                      <span className="truncate">
-                        from {sharedFromOwner.split("@")[0]}
-                      </span>
+                      <span className="truncate">from {fromLabel}</span>
                     </>
                   )}
-                  {variant === "owned" && doc.access.length > 0 && (
+                  {variant === "owned" && doc.sharedWith.length > 0 && (
                     <>
                       <span aria-hidden>·</span>
                       <span>shared</span>

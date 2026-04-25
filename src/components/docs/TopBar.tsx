@@ -14,8 +14,8 @@ interface TopBarProps {
   onShareClick: () => void;
   onImportClick: () => void;
   users: User[];
-  currentUserEmail: string;
-  onUserChange: (email: string) => void;
+  currentUserId: string;
+  onUserChange: (userId: string) => void;
   isReadOnly: boolean;
   ownerLabel: string | null;
   disabled?: boolean;
@@ -28,7 +28,7 @@ export function TopBar({
   onShareClick,
   onImportClick,
   users,
-  currentUserEmail,
+  currentUserId,
   onUserChange,
   isReadOnly,
   ownerLabel,
@@ -82,7 +82,7 @@ export function TopBar({
         </Button>
         <UserSwitcher
           users={users}
-          currentUserEmail={currentUserEmail}
+          currentUserId={currentUserId}
           onUserChange={onUserChange}
         />
       </div>

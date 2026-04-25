@@ -1,19 +1,26 @@
-import type { DocumentItem, User } from "@/types/docs";
+import type { DocumentItem, SharePermission, User } from "@/types/docs";
 
+/** User A / User B (demo, no real auth) — ids must match Supabase `owner_id` & `shared_with` values. */
 export const USERS: User[] = [
   {
-    email: "xinyi@ajaia.demo",
-    name: "Xinyi Chen",
-    initials: "XC",
+    id: "user_xinyi",
+    email: "haley@ajaia.demo",
+    name: "User A (Haley)",
+    initials: "A",
     color: "bg-primary",
   },
   {
+    id: "user_reviewer",
     email: "reviewer@ajaia.demo",
-    name: "Reviewer",
-    initials: "RV",
+    name: "User B (Reviewer)",
+    initials: "B",
     color: "bg-emerald-500",
   },
 ];
+
+export function getUserById(id: string): User | undefined {
+  return USERS.find((u) => u.id === id);
+}
 
 const now = Date.now();
 const minutes = (n: number) => now - n * 60_000;
@@ -24,26 +31,27 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
   {
     id: "doc-welcome",
     title: "Welcome to Ajaia Docs",
-    ownerEmail: "xinyi@ajaia.demo",
+    ownerId: "user_xinyi",
+    sharedWith: ["user_reviewer"],
+    sharedAccess: { user_reviewer: "edit" satisfies SharePermission },
     updatedAt: minutes(4),
-    access: [{ email: "reviewer@ajaia.demo", permission: "edit" }],
     content: `<h1>Welcome to Ajaia Docs</h1>
-<p>Ajaia Docs is a lightweight, collaborative document editor for internal teams. Use the toolbar above to format your text.</p>
+<p>Switch <b>User A / User B</b> in the top-right, then look at <b>My documents</b> vs <b>Shared with me</b>.</p>
 <h2>What you can do</h2>
 <ul>
   <li>Create and rename documents from the sidebar</li>
   <li>Format with <b>bold</b>, <i>italic</i>, and <u>underline</u></li>
-  <li>Import <b>.txt</b> and <b>.md</b> files</li>
-  <li>Share with teammates and set access</li>
+  <li>Use <b>Share</b> to add the other demo user (simplified, no real login)</li>
 </ul>
-<p>Tip: switch between users in the top-right to see how sharing works.</p>`,
+<p>Tip: “Shared with me” lists documents where your user id is in <code>shared_with</code>.</p>`,
   },
   {
     id: "doc-roadmap",
     title: "Q2 Product Roadmap",
-    ownerEmail: "xinyi@ajaia.demo",
+    ownerId: "user_xinyi",
+    sharedWith: [],
+    sharedAccess: {},
     updatedAt: hours(3),
-    access: [],
     content: `<h1>Q2 Product Roadmap</h1>
 <p>Goals for the quarter, prioritized by impact.</p>
 <ol>
@@ -55,9 +63,10 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
   {
     id: "doc-design-review",
     title: "Design Review Notes",
-    ownerEmail: "reviewer@ajaia.demo",
+    ownerId: "user_reviewer",
+    sharedWith: ["user_xinyi"],
+    sharedAccess: { user_xinyi: "view" satisfies SharePermission },
     updatedAt: days(1),
-    access: [{ email: "xinyi@ajaia.demo", permission: "edit" }],
     content: `<h1>Design Review Notes</h1>
 <p>Feedback from the weekly design review session.</p>
 <ul>
@@ -69,9 +78,10 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
   {
     id: "doc-onboarding",
     title: "Team Onboarding Checklist",
-    ownerEmail: "reviewer@ajaia.demo",
+    ownerId: "user_reviewer",
+    sharedWith: ["user_xinyi"],
+    sharedAccess: { user_xinyi: "edit" satisfies SharePermission },
     updatedAt: days(3),
-    access: [{ email: "xinyi@ajaia.demo", permission: "view" }],
     content: `<h1>Team Onboarding Checklist</h1>
 <ol>
   <li>Set up workspace</li>
@@ -80,3 +90,31 @@ export const INITIAL_DOCUMENTS: DocumentItem[] = [
 </ol>`,
   },
 ];
+
+const USER_STORAGE_KEY = "ajaia_current_user_id";
+
+export function readStoredUserId(): string | null {
+  if (typeof localStorage === "undefined") return null;
+  try {
+    return localStorage.getItem(USER_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function writeStoredUserId(id: string): void {
+  if (typeof localStorage === "undefined") return;
+  try {
+    localStorage.setItem(USER_STORAGE_KEY, id);
+  } catch {
+    /* ignore */
+  }
+}
+
+export function getInitialUserId(): string {
+  const stored = readStoredUserId();
+  if (stored && USERS.some((u) => u.id === stored)) {
+    return stored;
+  }
+  return USERS[0].id;
+}

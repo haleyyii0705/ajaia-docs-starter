@@ -10,7 +10,6 @@ interface SidebarProps {
   activeDocId: string | null;
   onSelect: (id: string) => void;
   onNewDocument: () => void;
-  currentUserEmail: string;
 }
 
 export function Sidebar({
@@ -19,7 +18,6 @@ export function Sidebar({
   activeDocId,
   onSelect,
   onNewDocument,
-  currentUserEmail,
 }: SidebarProps) {
   return (
     <aside className="flex h-screen w-72 shrink-0 flex-col border-r border-border bg-workspace">
@@ -57,7 +55,6 @@ export function Sidebar({
             documents={myDocs}
             activeId={activeDocId}
             onSelect={onSelect}
-            currentUserEmail={currentUserEmail}
             variant="owned"
             emptyLabel="No documents yet. Create one to get started."
           />
@@ -72,7 +69,6 @@ export function Sidebar({
             documents={sharedDocs}
             activeId={activeDocId}
             onSelect={onSelect}
-            currentUserEmail={currentUserEmail}
             variant="shared"
             emptyLabel="Nothing shared with you yet."
           />

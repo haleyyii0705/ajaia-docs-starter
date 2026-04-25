@@ -133,9 +133,12 @@ All colors MUST be HSL.
 .editor-canvas {
   outline: none;
 }
-.editor-canvas:empty::before {
+/* @tiptap/extension-placeholder */
+.editor-canvas p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   color: hsl(var(--muted-foreground));
+  float: left;
+  height: 0;
   pointer-events: none;
 }
 .editor-canvas h1 {
