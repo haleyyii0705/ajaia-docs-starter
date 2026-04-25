@@ -2,6 +2,12 @@
 
 A collaborative document editor demo built with React, Vite, TipTap, and Supabase.
 
+## Submission Documents
+
+- `ARCHITECTURE.md` - short architecture note
+- `AI_WORKFLOW.md` - AI workflow note
+- `SUBMISSION.md` - submission manifest of included artifacts
+
 ## What This Project Includes
 
 - Rich text editing (bold, italic, underline, headings, lists)
@@ -16,7 +22,7 @@ A collaborative document editor demo built with React, Vite, TipTap, and Supabas
 ## Demo Users
 
 - User A (Haley)
-  - id: `user_xinyi`
+  - id: `user_haley`
   - email: `haley@ajaia.demo`
 - User B (Reviewer)
   - id: `user_reviewer`
